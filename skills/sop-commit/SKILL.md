@@ -19,8 +19,9 @@ For detailed conventions, examples, sources, and repo-specific overrides, read `
 
 1. Read the available `git diff`, `git diff --cached`, `git status --short`, change summary, or request context.
 2. Group changes by one logical purpose, not by file path alone.
-3. Split feature work, fixes, docs changes, test-only maintenance, CI changes, build changes, and unrelated refactors into separate commits when they serve different purposes.
-4. For each group, write the subject as `type(optional-unit): description`.
+3. Propose the commit plan first. **Do not execute `git commit` until the user explicitly says "Start commit" or gives clear approval.**
+4. Split feature work, fixes, docs changes, test-only maintenance, CI changes, build changes, and unrelated refactors into separate commits when they serve different purposes.
+5. For each group, write the subject as `type(optional-unit): description`.
 5. Choose `type` from `feature`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, or `revert`.
 6. Treat `optional-unit` as a weak English mapping to a module, subsystem, page, component type, or function area. It does not need to match code names exactly, but it should stay reasonably consistent within the repo.
 7. Keep the subject concise. Aim for about 50 characters and avoid exceeding 72 characters without a strong reason.

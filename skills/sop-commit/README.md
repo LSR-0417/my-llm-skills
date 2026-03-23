@@ -10,7 +10,8 @@
 
 ## 2. 應作流程
 
-- 先分析目前所有變更，依單一邏輯目的拆成一條或多條 atomic commits。
+- 先分析目前所有變更，依單一邏輯目的規劃成一條或多條 atomic commits。
+- **必須等待使用者明確指示「開始 commit」或給予同意後，才實際執行 `git commit` 指令**，在此之前僅提供規劃供確認。
 - 每條 commit subject 都用清楚的 `type(optional-unit): description`，並搭配 body 描述改動脈絡。
 - 同一功能直接附帶的測試與必要文件可與主變更同 commit；不同目的的修改應拆開。
 - 需要關聯 issue 或標示破壞性變更時，再補對應 footer。
