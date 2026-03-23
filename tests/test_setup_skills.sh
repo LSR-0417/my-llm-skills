@@ -38,7 +38,7 @@ echo "📂 建立隔離的測試資料夾: $TEST_ENV"
 run_test "全新環境的預設選單派發"
 
 # 模擬使用者輸入: 按下 Enter (預設選項 1,2,3,4)
-echo "" | "$SETUP_SCRIPT" "$TEST_ENV" > /dev/null
+"$SETUP_SCRIPT" "$TEST_ENV" --set "1,2,3,4" > /dev/null
 
 assert "-L $TEST_ENV/.claude/skills" ".claude/skills 應建立軟連結"
 assert "-L $TEST_ENV/.opencode/skills" ".opencode/skills 應建立軟連結"
@@ -56,7 +56,7 @@ mkdir -p "$TEST_ENV/.claude/skills"
 touch "$TEST_ENV/.claude/skills/dummy.txt"
 
 # 模擬使用者單純選 1
-echo "1" | "$SETUP_SCRIPT" "$TEST_ENV" > /dev/null
+"$SETUP_SCRIPT" "$TEST_ENV" --set "1" > /dev/null
 
 assert "-L $TEST_ENV/.claude/skills" "執行後，.claude/skills 應被強制清除並重建為軟連結"
 
@@ -74,7 +74,7 @@ mkdir -p "$HOME"
 # 模擬使用者輸入: 選擇選項 4 (VS Code) 測試是否會阻擋
 # -g 模式下對選項 4 應只印出警告，不該建立檔案
 # 選項 1 建立 claude
-echo -e "1,4\n" | "$SETUP_SCRIPT" -g > /dev/null
+"$SETUP_SCRIPT" --set "1,4" -g > /dev/null
 
 assert "-L $HOME/.claude/skills" "全域模式下 .claude/skills 應正確建立軟連結 (在 HOME 下)"
 assert "! -f $HOME/.github/copilot-instructions.md" "全域模式應阻擋 VS Code 指令檔的生成"
