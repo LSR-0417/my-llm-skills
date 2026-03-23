@@ -6,11 +6,13 @@ SKILLS_SRC_DIR="$(cd "$(dirname "$0")" && pwd)/skills"
 # 預設值
 TARGET_DIR="."
 IS_GLOBAL=0
+AUTO_OPTIONS=""
 
 # 解析參數
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         -g|--global) IS_GLOBAL=1; shift ;;
+        --set) AUTO_OPTIONS="$2"; shift 2 ;;
         *) TARGET_DIR="$1"; shift ;;
     esac
 done
@@ -29,28 +31,79 @@ else
     echo "🚀 開始派發 Agent Skills 到目標專案: $TARGET_DIR"
 fi
 
-echo ""
-echo "========================================="
-echo "請選擇您要派發哪些 AI 工具的設定（可多選，用逗號分隔，例如 1,3,4）"
-echo "直接按 Enter 代表全選 (1,2,3,4)"
-echo "-----------------------------------------"
-echo "1) Anthropic (Claude Code) -> .claude/"
-echo "2) Open-Code (Open-Code)   -> .opencode/"
-echo "3) Codex / Antigravity     -> .agents/"
-echo "4) VS Code (GitHub Copilot)-> copilot-instructions.md"
-echo "========================================="
-read -p "請輸入需要綁定的項目編號 [預設: 1,2,3,4]: " user_input
+selected_options=()
 
-# 處理預設值
-if [ -z "$user_input" ]; then
-    user_input="1234"
+if [ -n "$AUTO_OPTIONS" ]; then
+    # 若有帶入參數，過濾數字後轉為陣列
+    val=$(echo "$AUTO_OPTIONS" | grep -o '[1-4]')
+    eval "selected_options=($(echo "$val" | sort -u | tr '\n' ' '))"
+else
+    # 終端機 TUI 互動模式
+    options=("Anthropic (Claude Code)" "Open-Code (Open-Code)" "Codex / Antigravity" "VS Code (GitHub Copilot)")
+    target_dirs=(".claude/" ".opencode/" ".agents/" "copilot-instructions.md")
+    selected=(0 0 0 0)
+    current_idx=0
+
+    # 隱藏游標並設定跳出時恢復
+    tput civis
+    trap 'tput cnorm; stty echo; exit 1' INT TERM EXIT
+    stty -echo
+
+    draw_menu() {
+        if [ "$1" -eq 1 ]; then tput cuu 6; fi
+        echo -e "請使用 [\033[1m↑/↓\033[0m] 切換，[\033[1m空白鍵\033[0m] 勾選/取消，[\033[1mEnter\033[0m] 確認：\033[K"
+        echo -e "---------------------------------------------------------\033[K"
+        for i in "${!options[@]}"; do
+            if [ "$i" -eq "$current_idx" ]; then printf "\033[7m"; fi
+            local checkbox=" "
+            if [ "${selected[$i]}" -eq 1 ]; then checkbox="x"; fi
+            printf "[%s] %-25s -> %s \033[0m\033[K\n" "$checkbox" "${options[$i]}" "${target_dirs[$i]}"
+        done
+    }
+
+    echo ""
+    draw_menu 0
+
+    while true; do
+        IFS= read -rsn1 key
+        if [[ $key == $'\x1b' ]]; then
+            read -rsn2 key2
+            if [[ $key2 == '[A' ]]; then # Up
+                ((current_idx--))
+                if [ $current_idx -lt 0 ]; then current_idx=3; fi
+            elif [[ $key2 == '[B' ]]; then # Down
+                ((current_idx++))
+                if [ $current_idx -gt 3 ]; then current_idx=0; fi
+            fi
+        elif [[ $key == " " ]]; then # Space toggle
+            if [ "${selected[$current_idx]}" -eq 1 ]; then
+                selected[$current_idx]=0
+            else
+                selected[$current_idx]=1
+            fi
+        elif [[ -z $key ]]; then # Enter key
+            break
+        fi
+        draw_menu 1
+    done
+
+    # 恢復游標與終端機設定
+    tput cnorm
+    stty echo
+    trap - INT TERM EXIT
+    
+    # 收集勾選結果
+    for i in "${!selected[@]}"; do
+        if [ "${selected[$i]}" -eq 1 ]; then
+            selected_options+=($((i+1)))
+        fi
+    done
 fi
 
-# 擷取所有 1~4 的數字並轉成陣列 (支援逗號、空白、無分隔符號等任意格式)
-user_input=$(echo "$user_input" | grep -o '[1-4]')
-
-# 去除陣列中重複的選項 (如果輸入 112 -> 1 2)
-eval "selected_options=($(echo "$user_input" | sort -u | tr '\n' ' '))"
+if [ ${#selected_options[@]} -eq 0 ]; then
+    echo -e "\n⚠️  未選取任何項目，取消操作並退出。"
+    exit 0
+fi
 
 # 安全建立軟連結的函數
 check_and_link() {
