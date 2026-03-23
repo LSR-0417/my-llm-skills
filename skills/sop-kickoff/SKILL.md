@@ -14,18 +14,26 @@ This skill executes the kickoff gate. The active role skill defines the lens, re
 - Validate whether the current topic is ready to enter workspace setup.
 - Clarify scope, acceptance, risks, and development preconditions from the active role lens.
 - Confirm the current `User Story` and `Spec. Test` baseline before coding starts.
+- Draft the finalized kickoff result as a PM-style User Story Issue, tagged with `type: user-story`, and push it to the Git server.
 
 ## Workflow
 
-1. From the active role lens, confirm the core problem, scope, non-scope, acceptance, and risks.
-2. Read the PM-provided `User Story` carefully. If it is too large, unclear, under-specified, or not ready for direct implementation, raise it and ask for split, clarification, or refinement.
-3. Confirm the PM-provided `User Story` and TE-provided `Spec. Test` are the current development baseline.
-4. Treat both `User Story` and `Spec. Test` as living artifacts. If PM or TE updates them during development, re-check the baseline and adjust direction.
-5. Ensure there is still a traceable issue or equivalent tracking record before implementation proceeds.
-6. Only when the `User Story`, scope, and development preconditions are clear enough should workspace setup be handed to `$sop-workspace`.
+1. Determine the active role (`role-pm`, `role-developer`, or `role-te`) and execute responsibilities accordingly.
+2. **If PM (`role-pm`)**:
+   - Clarify vague customer/stakeholder requirements and convert them into clear, reasonable, and feasible User Stories. 
+   - Push the kickoff result as a User Story Issue to the Git server (Title: `<summary>`, Body: User Story, Acceptance Criteria, Notes), labeled with `type: user-story`.
+   - If pushing to the Git server fails or is unsupported, remind the user and print the full Issue Title and Body in the chat for manual copy-pasting.
+3. **If TE (`role-te`)**: 
+   - Write `Spec. Test`, `Scenario Test`, and `Edge Test` strictly based on the PM's User Story.
+   - If the User Story changes during development, MUST synchronously revise the corresponding tests to provide a reliable baseline for RD.
+4. **If RD (`role-developer`)**: 
+   - Implement features targeting the User Story and passing all tests created by the TE.
+   - Only when the `User Story`, scope, and development preconditions are clear enough should workspace setup be handed to `$sop-workspace`.
+5. Ensure there is a traceable issue or equivalent tracking record before implementation proceeds.
 
 ## Guardrails
 
+- Do not write to, modify, or commit any files on protected main branches (e.g., `main`, `master`, `develop`) during the kickoff and discussion phase.
 - Do not start coding directly from a vague topic.
 - Do not assume the first version of `User Story` or `Spec. Test` is final.
 - Do not ignore scope size, clarity gaps, or missing acceptance detail just to start faster.
