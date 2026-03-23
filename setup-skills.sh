@@ -60,29 +60,17 @@ check_and_link() {
 
     mkdir -p "$target_dir"
 
-    # 1. 檢查是否存在且為實體資料夾 (非軟連結)
+    # 如果已存在實體資料夾 (非軟連結)，目前策略為強制覆蓋
     if [ -d "$link_target" ] && [ ! -L "$link_target" ]; then
-        echo -e "\n⚠️  警告: 發現 ${tool_name} 的技能庫已是一個實體資料夾 ($link_target)。"
-        # 由於可能有 CI 或無法互動的環境，建議加上判斷，但既然是要「互動式」，這裡強制問
-        read -p "是否要自動更名備份並替換為統一的共用軟連結？[y/N]: " backup_ans
-        case $backup_ans in
-            [Yy]* )
-                local timestamp=$(date +"%Y%m%d_%H%M%S")
-                local backup_name="${link_target}_backup_${timestamp}"
-                mv "$link_target" "$backup_name"
-                echo "✅ 已備份至: $backup_name"
-                ln -sfn "$SKILLS_SRC_DIR" "$link_target"
-                echo "✅ 已成功建立 $tool_name 的共用軟連結 ($link_target)"
-                ;;
-            * )
-                echo "⏭️  跳過 $tool_name 的派發，保留原樣 ($link_target)。"
-                ;;
-        esac
-    else
-        # 2. 如果不存在，或是已經是軟連結 (不論是否正確)，直接強制覆蓋重建
-        ln -sfn "$SKILLS_SRC_DIR" "$link_target"
-        echo "✅ 已成功派發 $tool_name 的共用軟連結 ($link_target)"
+        echo -e "\n⚠️  警告: 發現 ${tool_name} 的舊有同名技能資料夾 ($link_target)。"
+        echo "🗑️  正在強制覆蓋並刪除舊有資料夾..."
+        rm -rf "$link_target"
+        echo "✅ 已成功強制覆蓋同名 skill 目錄"
     fi
+
+    # 建立或覆蓋軟連結
+    ln -sfn "$SKILLS_SRC_DIR" "$link_target"
+    echo "✅ 已成功派發 $tool_name 的共用軟連結 ($link_target)"
 }
 
 echo ""
