@@ -1,0 +1,11 @@
+# 忽略各大 AI IDE 與 Agent 產生的設定檔與軟連結目錄
+.claude/
+.opencode/
+.agents/
+.vscode/
+
+# GitHub Copilot 指令也是自動編譯產生的，不需進追蹤
+.github/copilot-instructions.md
+
+# macOS 系統產生檔案
+.DS_Store
