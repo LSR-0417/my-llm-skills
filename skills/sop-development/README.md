@@ -20,6 +20,10 @@
 - 若某些情境不實作，驗證通過標準應改為是否有正確防禦、正確阻擋，或正確回應預期錯誤，而不是假裝完整支援。
 - 若 `Scenario Test` 驗出錯誤，應先回報 RD 檢查 SDD 是否需要修正，再同步調整實作、Issue、User Story 與測試內容。
 - 新增或修改可單元驗證的邏輯時，不論先寫還是後補，都要補上對應 unit test。
+- **UI Contract 掃描**：若改動改變了 UI 結構、可見文案、`data-testid` 或互動流程，必須在視為完成前，檢查並更新所有受影響的 contract / E2E 測試。
+- **selector / 文案變更必查**：當改變 dialog 佈局或 RWD 互動區塊時，務必在 `e2e/` 與 contract tests 中搜尋相關的 `data-testid` 字串及畫面可見文案，並於相同主題內更新預期結果。
+- **驗證層級對齊**：當任務改變了面向使用者的互動時，驗證不應停在 Unit Test 或 Component Test。只要 selector、dialogs、menus、hotkeys 或 responsive 行為受到影響，就必須執行最接近 CI 等級的驗證層（包含 E2E 測試）。
+- **合併後再驗一次**：在 merge 或 rebase 到最新的 integration branch 後，必須重新執行受影響的驗證組合；因為即使本地 feature code 沒變，上游的 UI 或共用行為變更仍可能讓既有測試失效。
 - 以小步前進並分階段驗證，完成階段性目標後交給 `sop-commit`。
 
 ## 3. 禁止項目

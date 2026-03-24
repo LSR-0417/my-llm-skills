@@ -27,9 +27,13 @@ For full human-facing guidance and examples, read `README.md`.
 10. If some scenarios are intentionally unsupported, the pass condition becomes correct defense, blocking, or expected error handling rather than pretending to provide full support.
 11. If `Scenario Test` exposes a mismatch, report it back, check whether `SDD` needs correction, and then sync implementation, issue, `User Story`, and test content.
 12. Move in small steps and validate incrementally. If the change touches logic that can be unit-tested, add the corresponding unit tests whether you write them first or after the implementation.
-13. If a change is genuinely not suitable for unit-test coverage, state why and add an acceptable alternative validation method.
-14. Preserve enough rationale to support later atomic commits and PR summaries.
-15. Once a milestone is complete, hand off to `$sop-commit`.
+13. **UI Contract Scan**: If a change modifies UI structure, visible labels, `data-testid` values, or interaction flow, inspect and update all affected contract/E2E tests before considering the task complete.
+14. **Selector/Text Check**: When changing dialog layouts or responsive action areas, search `e2e/` and contract tests for related `data-testid` strings and user-visible text, and update those expectations in the same topic.
+15. **Validation Alignment**: Do not stop at unit or component tests when the task changes user-facing interaction. Run the closest CI-equivalent validation layer, including E2E tests when selectors, dialogs, menus, hotkeys, or responsive behavior are affected.
+16. **Re-validation after Merge**: After merging or rebasing onto the latest integration branch, rerun the impacted validation set because upstream UI or shared behavior may invalidate existing tests even when local feature code did not change.
+17. If a change is genuinely not suitable for unit-test coverage, state why and add an acceptable alternative validation method.
+18. Preserve enough rationale to support later atomic commits and PR summaries.
+19. Once a milestone is complete, hand off to `$sop-commit`.
 
 ## Guardrails
 
