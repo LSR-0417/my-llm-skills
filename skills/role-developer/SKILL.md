@@ -1,6 +1,6 @@
 ---
 name: role-developer
-description: Baseline software engineer role. Use when Codex should think and act from core software engineering responsibilities in collaboration or solo execution: clarify scope and definition of done, protect testability and traceability, maintain engineering discipline, and hand off concrete execution to the appropriate SOP skill.
+description: "Baseline software engineer role. Use when Codex should think and act from core software engineering responsibilities in collaboration or solo execution: clarify scope and definition of done, protect testability and traceability, maintain engineering discipline, and hand off concrete execution to the appropriate SOP skill."
 ---
 
 # role-developer

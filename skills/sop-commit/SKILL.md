@@ -1,6 +1,6 @@
 ---
 name: sop-commit
-description: Split atomic commits from `git diff`, staged changes, file changes, or a change summary, and write full Git commit messages. Use when Codex must decide commit boundaries, write `type(optional-unit): description` subjects, produce clear body bullets and footer trailers, and generate commit messages that can later be reused in a PR.
+description: "Split atomic commits from `git diff`, staged changes, file changes, or a change summary, and write full Git commit messages. Use when Codex must decide commit boundaries, write `type(optional-unit): description` subjects, produce clear body bullets and footer trailers, and generate commit messages that can later be reused in a PR."
 ---
 
 # sop-commit
